@@ -9,7 +9,7 @@ var initialPlaces = [
 
 // Place class
 var Place = function(data) {
-  this.title = ko.observable(data.title);
-  this.position = ko.observable(data.position);
+  this.title = data.title;
+  this.position = data.location;
   this.show = true;
 }
