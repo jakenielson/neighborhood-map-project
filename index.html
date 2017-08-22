@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Jake Nielson's Map</title>
+  <link rel="stylesheet" type="text/css" href="css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <div id="interface">
+      <h1>Find a place on the map!</h1>
+      <div>
+        <input id="show-listings" type="button" value="Show Places" data-bind="click: showPlaces">
+        <input id="hide-listings" type="button" value="Hide Places" data-bind="click: hidePlaces">
+      </div>
+      <hr>
+      <ul id="places-list" data-bind="if length > 0 , foreach: currentPlaces">
+        <li data-bind="text: title"></li>
+      </ul>
+    </div>
+    <div id="map">
+    </div>
+  </div>
+  <script src="js/lib/knockout-3.4.2.js"></script>
+  <script src="js/places.js"></script>
+  <script src="js/viewmodel.js"></script>
+  <script src="js/map.js"></script>
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBguPOlsnhqYxlj8uV8PNfDniCUhlm8I1g&v=3&callback=viewModel.initMap">
+  </script>
+</body>
+</html>
