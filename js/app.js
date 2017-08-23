@@ -1,8 +1,14 @@
 var ViewModel = function () {
   // Data
+  // API objects
   this.map = null;
   this.geoCoder = null;
-  this.city = ko.observable("Mesa, AZ");
+
+  // The currently selected city
+  this.city = ko.observable();
+
+  // The mode of the interface (main, list, or info)
+  this.mode = ko.observable('main');
 
   // Functions
   // Move the map to a new latLng
@@ -13,7 +19,7 @@ var ViewModel = function () {
       var location = result[0].geometry.location;
       self.map.panTo(location);
     });
-  },
+  };
 
   // Initialize the map
   this.initMap = function() {
@@ -22,19 +28,19 @@ var ViewModel = function () {
       zoom: 13,
       mapTypeControl: false
     });
-  },
+  };
 
   // Initialize the geoCoder
   this.initGeoCoder = function() {
     this.geoCoder = new google.maps.Geocoder();
-  },
+  };
 
   // Initialize the app
   this.init = function() {
     this.initMap();
     this.initGeoCoder();
   }
-}
+};
 
 // Instantiate a viewModel so viewModel.init can be used as the google api callback
 var viewModel = new ViewModel();
