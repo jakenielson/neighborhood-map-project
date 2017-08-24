@@ -15,11 +15,22 @@
         <input type="submit" value="Submit">
       </form>
       <hr>
-      <div data-bind="visible: mode() === 'main'">
+      <div class="menu menu-main" data-bind="visible: mode() === 'main'">
+        <ul id="main-list">
+          <li data-bind="click: getHotels">Hotels</li>
+          <li data-bind="click: getRestaurants">Restaurants</li>
+          <li data-bind="click: getEntertainment">Entertainment</li>
+          <li data-bind="click: getShopping">Shopping</li>
+          <li data-bind="click: getATMs">ATM</li>
+          <li data-bind="click: getTourism">Tourism</li>
+        </ul>
       </div>
-      <div data-bind="visible: mode() === 'list'">
+      <div class="menu menu-list" data-bind="visible: mode() === 'list'">
+        <ul id="place-list" data-bind="foreach: shownPlaces">
+          <li data-bind="text: name"></li>
+        </ul>
       </div>
-      <div data-bind="visible: mode() === 'info'">
+      <div class="menu menu-info" data-bind="visible: mode() === 'info'">
       </div>
     </div>
     <div id="map">
