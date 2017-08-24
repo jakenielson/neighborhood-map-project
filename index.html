@@ -10,20 +10,18 @@
     <div id="interface">
       <h1>Neighborhood Map Project</h1>
       <hr>
+      Enter a city or address:
       <form data-bind="submit: moveMap">
         <input data-bind="value: city" id="input-city" type="text">
         <input type="submit" value="Submit">
       </form>
       <hr>
       <div class="menu menu-main" data-bind="visible: mode() === 'main'">
-        <ul id="main-list">
-          <li data-bind="click: getHotels">Hotels</li>
-          <li data-bind="click: getRestaurants">Restaurants</li>
-          <li data-bind="click: getEntertainment">Entertainment</li>
-          <li data-bind="click: getShopping">Shopping</li>
-          <li data-bind="click: getATMs">ATM</li>
-          <li data-bind="click: getTourism">Tourism</li>
-        </ul>
+        Find places:
+        <form data-bind="submit: getPlaces">
+          <input data-bind="value: query" id="input-query" type="text">
+          <input type="submit" value="Submit">
+        </form>
       </div>
       <div class="menu menu-list" data-bind="visible: mode() === 'list'">
         <ul id="place-list" data-bind="foreach: places">

@@ -16,6 +16,9 @@ var ViewModel = function () {
   // The currently selected city
   this.city = ko.observable('Mesa, AZ');
 
+  // The currently search query
+  this.query = ko.observable('');
+
   // The mode of the interface (main, list, or info)
   this.mode = ko.observable('main');
 
@@ -51,11 +54,12 @@ var ViewModel = function () {
   };
 
   // Get places with given query
-  this.getPlaces = function(query) {
+  this.getPlaces = function() {
     var self = this;
     // Convert this.city to a latLng
     this.geoCoder.geocode({address: this.city()}, function(result){
       var location = result[0].geometry.location;
+      var query = self.query();
       var request = {
         location: location,
         radius: 200,
