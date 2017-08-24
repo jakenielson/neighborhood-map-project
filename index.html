@@ -29,6 +29,7 @@
         <ul id="place-list" data-bind="foreach: shownPlaces">
           <li data-bind="text: name"></li>
         </ul>
+        <input data-bind="click: menuBack" type="button" value="< Back">
       </div>
       <div class="menu menu-info" data-bind="visible: mode() === 'info'">
       </div>

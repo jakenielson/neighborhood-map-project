@@ -19,6 +19,27 @@ var ViewModel = function () {
   this.mode = ko.observable('main');
 
   // Functions
+  // Return to a previous menu
+  this.menuBack = function() {
+    console.log("Meep!");
+    switch (this.mode()){
+      case 'list':
+        // Clear markers
+        if (this.markers) {
+          for (i = 0; i< this.markers.length; i++) {
+            this.markers[i].setMap(null);
+          };
+        };
+        this.markers = [];
+
+        // Change mode
+        this.mode('main');
+        break;
+      default:
+        break;
+    };
+  };
+
   // Show places
   this.showPlaces = function() {
     // Update shownPlaces
@@ -94,7 +115,7 @@ var ViewModel = function () {
       var location = result[0].geometry.location;
       var request = {
         location: location,
-        radius: 5000,
+        radius: 200,
         query: query
       };
       self.placesService.textSearch(request, function(result) {
