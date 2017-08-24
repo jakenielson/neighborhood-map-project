@@ -26,3 +26,9 @@ body {
 .container {
   height: 100%;
 }
+
+#place-list {
+  height: 70vh;
+  overflow: hidden;
+  overflow-y: scroll;
+}

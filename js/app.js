@@ -8,7 +8,7 @@ var ViewModel = function () {
   this.markerIcon = null;
 
   // The collection of places
-  this.places = [];
+  this.places = ko.observableArray();
 
   // The places currently shown in the menu list
   this.shownPlaces = ko.observableArray();
@@ -62,7 +62,7 @@ var ViewModel = function () {
         query: query
       };
       self.placesService.textSearch(request, function(result) {
-        self.places = result;
+        self.places(result);
         self.showPlaces();
       });
     });
@@ -73,7 +73,7 @@ var ViewModel = function () {
     // Get the first 5 places
     var shown = [];
     for (var i = 0; i < 5; i++){
-      shown[i] = this.places[i];
+      shown[i] = this.places()[i];
     };
 
     // Show the first 5 places
@@ -92,9 +92,9 @@ var ViewModel = function () {
   // Make new markers
   this.makeMarkers = function() {
     var bounds = new google.maps.LatLngBounds();
-    for (i = 0; i < this.places.length; i++) {
-      var title = this.places[i].name;
-      var position = this.places[i].geometry.location;
+    for (i = 0; i < this.places().length; i++) {
+      var title = this.places()[i].name;
+      var position = this.places()[i].geometry.location;
       var icon = this.markerIcon;
       var marker = new google.maps.Marker({
         position: position,
