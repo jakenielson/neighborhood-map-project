@@ -19,7 +19,8 @@
       <div class="menu menu-main" data-bind="visible: mode() === 'main'">
         Find places:
         <form data-bind="submit: getPlaces">
-          <input data-bind="value: query" id="input-query" type="text">
+          <input data-bind="value: queryText" id="input-query" type="text"> Query<br>
+          <input data-bind="value: queryRadius" id="input-distance" type="text"> Distance (miles)<br>
           <input type="submit" value="Submit">
         </form>
       </div>

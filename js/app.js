@@ -16,8 +16,9 @@ var ViewModel = function () {
   // The currently selected city
   this.city = ko.observable('Mesa, AZ');
 
-  // The currently search query
-  this.query = ko.observable('');
+  // The current search query
+  this.queryText = ko.observable('Food');
+  this.queryRadius = ko.observable(5);
 
   // The mode of the interface (main, list, or info)
   this.mode = ko.observable('main');
@@ -59,10 +60,11 @@ var ViewModel = function () {
     // Convert this.city to a latLng
     this.geoCoder.geocode({address: this.city()}, function(result){
       var location = result[0].geometry.location;
-      var query = self.query();
+      var query = self.queryText();
+      var radius = self.milesToMeters(self.queryRadius());
       var request = {
         location: location,
-        radius: 200,
+        radius: radius,
         query: query
       };
       self.placesService.textSearch(request, function(result) {
@@ -147,6 +149,12 @@ var ViewModel = function () {
       default:
         break;
     };
+  };
+
+  // Convert miles to meters
+  this.milesToMeters = function(miles) {
+    var meters = miles * 1609; // 1 mi = 1609 m
+    return meters;
   };
 
   // Initialize the placesService
