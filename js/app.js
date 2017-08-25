@@ -11,7 +11,7 @@ var ViewModel = function () {
   this.places = ko.observableArray();
 
   // The currently selected city
-  this.city = ko.observable('Mesa, AZ');
+  this.city = ko.observable();
   this.cityLocation = null;
 
   // Search query input
@@ -22,10 +22,18 @@ var ViewModel = function () {
   this.placeName = ko.observable();
   this.placePhoto = ko.observable();
 
-  // The mode of the interface (main, list, or info)
-  this.mode = ko.observable('main');
+  // The mode of the interface (start, list, or info)
+  this.mode = ko.observable('start');
 
   // Functions
+  // Bounce a marker
+  this.bounce = function(marker) {
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+    setTimeout(function(){
+      marker.setAnimation(null);
+    }, 750);
+  };
+
   // Get info about a place
   this.getInfo = function(place) {
     this.placeName(place.name);
@@ -43,11 +51,32 @@ var ViewModel = function () {
   // Show info about a place
   this.showInfo = function(place) {
     var marker = this.getMarker(place);
+    this.bounce(marker);
     this.makeInfoWindow(place);
     this.mode('info');
   };
 
-  // Get places with queryText and queryRadius
+  // Get default places from a basic city search
+  this.defaultPlaces = function() {
+    var self = this;
+    var location = this.cityLocation;
+    var radius = this.milesToMeters(this.queryRadius());
+    var request = {
+      location: location,
+      radius: 5000
+    };
+    this.placesService.nearbySearch(request, function(result, status) {
+      if (status == google.maps.places.PlacesServiceStatus.OK) {
+        self.places(result);
+        self.showPlaces();
+      }
+      else {
+        window.alert('Places service request failed.');
+      }
+    });
+  };
+
+  // Get filtered places with queryText and queryRadius
   this.getPlaces = function() {
     var self = this;
     var location = this.cityLocation;
@@ -168,6 +197,7 @@ var ViewModel = function () {
       if (status == google.maps.GeocoderStatus.OK) {
         self.cityLocation = result[0].geometry.location;
         self.map.panTo(self.cityLocation);
+        self.defaultPlaces();
       }
       else {
         window.alert('Geocoder request failed.');
@@ -175,20 +205,10 @@ var ViewModel = function () {
     });
   };
 
-  // Return to a previous menu
+  // Return to list mode from info mode
   this.menuBack = function() {
-    switch (this.mode()){
-      case 'list':
-        this.clearMarkers();
-        this.mode('main');
-        break;
-      case 'info':
-        this.infoWindow.close();
-        this.mode('list');
-        break;
-      default:
-        break;
-    };
+    this.infoWindow.close();
+    this.mode('list');
   };
 
   // Called when a list item is clicked

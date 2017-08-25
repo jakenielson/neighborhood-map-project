@@ -10,29 +10,26 @@
     <div id="interface">
       <h1 id ="page-title">Neighborhood Map</h1>
       <hr>
-      <div class="menu menu-main" data-bind="visible: mode() === 'main'">
+      <div>
         Enter a city or address:
         <form data-bind="submit: moveMap">
           <input data-bind="value: city" id="input-city" type="text">
           <input type="submit" value="Submit">
         </form>
         <hr>
-        Find places:
+      </div>
+      <div class="menu menu-list" data-bind="visible: mode() === 'list'">
+        Filter places:
         <form data-bind="submit: getPlaces">
           <input data-bind="value: queryText" id="input-query" type="text"> Query<br>
           <input data-bind="value: queryRadius" id="input-distance" type="text"> Distance (miles)<br>
           <input type="submit" value="Submit">
         </form>
-      </div>
-      <div class="menu menu-list" data-bind="visible: mode() === 'list'">
-        <h3><span data-bind="text: queryText"></span> within <span data-bind="text: queryRadius"></span> miles of <br><span data-bind="text: city"></span>: </h3>
         <ul id="place-list" data-bind="foreach: places">
           <li data-bind="text: name, click: $parent.listClick.bind($parent, $data)"></li>
         </ul>
-        <input data-bind="click: menuBack" type="button" value="< Back">
       </div>
       <div class="menu menu-info" data-bind="visible: mode() === 'info'">
-        Showing info about: <br>
         <span data-bind="text: placeName"></span> <br>
         <img id="place-photo" data-bind="attr: {src: placePhoto, alt: placeName}"> <br>
         <input data-bind="click: menuBack" type="button" value="< Back">

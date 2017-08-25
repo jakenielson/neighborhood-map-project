@@ -28,7 +28,7 @@ body {
 }
 
 #place-list {
-  height: calc(100vh - 320px);
+  height: calc(100vh - 420px);
   overflow: hidden;
   overflow-y: scroll;
 }
