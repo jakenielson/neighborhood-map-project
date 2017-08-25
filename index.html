@@ -25,13 +25,16 @@
         </form>
       </div>
       <div class="menu menu-list" data-bind="visible: mode() === 'list'">
-        <h3><span data-bind="text: queryText"></span> within <span data-bind="text: queryRadius"></span> miles of <span data-bind="text: city"></span>: </h3>
+        <h3><span data-bind="text: queryText"></span> within <span data-bind="text: queryRadius"></span> miles of <br><span data-bind="text: city"></span>: </h3>
         <ul id="place-list" data-bind="foreach: places">
-          <li data-bind="text: name"></li>
+          <li data-bind="text: name, click: $parent.listClick.bind($parent, $data)"></li>
         </ul>
         <input data-bind="click: menuBack" type="button" value="< Back">
       </div>
       <div class="menu menu-info" data-bind="visible: mode() === 'info'">
+        Showing info about: <br>
+        <span data-bind="text: placeName"></span> <br>
+        <input data-bind="click: menuBack" type="button" value="< Back">
       </div>
     </div>
     <div id="map">
@@ -39,7 +42,6 @@
   </div>
   <script src="js/lib/jquery-3.2.1.min.js"></script>
   <script src="js/lib/knockout-3.4.2.js"></script>
-  <script src="js/data.js"></script>
   <script src="js/app.js"></script>
   <script async defer
     src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyBguPOlsnhqYxlj8uV8PNfDniCUhlm8I1g&v=3&callback=viewModel.init">

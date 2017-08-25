@@ -11,10 +11,14 @@ var ViewModel = function () {
 
   // The currently selected city
   this.city = ko.observable('Mesa, AZ');
+  this.cityLocation = null;
 
   // Search query input
   this.queryText = ko.observable('Food');
   this.queryRadius = ko.observable(5);
+
+  // The currently selected place
+  this.placeName = ko.observable();
 
   // The mode of the interface (main, list, or info)
   this.mode = ko.observable('main');
@@ -43,9 +47,11 @@ var ViewModel = function () {
 
   // Remove places that do not fit the current bounds
   this.filterPlaces = function() {
-    var bounds = this.map.getBounds();
+    var self = this;
     this.places(this.places().filter(function(place){
-      return bounds.contains(place.geometry.location);
+      var distance = self.distanceBetween(place.geometry.location, self.cityLocation);
+      var radius = self.milesToMeters(self.queryRadius());
+      return distance <= radius;
     }));
   };
 
@@ -61,26 +67,24 @@ var ViewModel = function () {
 
   // Make new markers
   this.makeMarkers = function() {
-    var bounds = this.map.getBounds();
+    var bounds = new google.maps.LatLngBounds();
     for (i = 0; i < this.places().length; i++) {
       var title = this.places()[i].name;
       var position = this.places()[i].geometry.location;
+      var marker = new google.maps.Marker({
+        position: position,
+        title: title,
+        optimize: false,
+        animation: null,
+        id: i
+      });
 
-      // Check if marker is in bounds (redundancy)
-      if (bounds.contains(position)){
-        var marker = new google.maps.Marker({
-          position: position,
-          title: title,
-          optimize: false,
-          animation: null,
-          id: i
-        });
-
-        // Add marker to map
-        marker.setMap(this.map);
-        this.markers.push(marker);
-      }
+      // Add marker to map
+      marker.setMap(this.map);
+      bounds.extend(marker.position);
+      this.markers.push(marker);
     };
+    this.map.fitBounds(bounds);
   };
 
   // Clear all markers
@@ -98,22 +102,35 @@ var ViewModel = function () {
     self = this;
     // Convert this.city to a latLng
     this.geoCoder.geocode({address: this.city()}, function(result) {
-      var location = result[0].geometry.location;
-      self.map.panTo(location);
+      self.cityLocation = result[0].geometry.location;
+      self.map.panTo(self.cityLocation);
     });
   };
 
   // Return to a previous menu
   this.menuBack = function() {
-    console.log("Meep!");
     switch (this.mode()){
       case 'list':
         this.clearMarkers();
         this.mode('main');
         break;
+      case 'info':
+        this.mode('list');
+        break;
       default:
         break;
     };
+  };
+
+  // Called when a list item is clicked
+  this.listClick = function(place) {
+    this.showInfo(place);
+  };
+
+  // Show info about a place
+  this.showInfo= function(place) {
+    this.placeName(place.name);
+    this.mode('info');
   };
 
   // Convert miles to meters
@@ -122,19 +139,24 @@ var ViewModel = function () {
     return meters;
   };
 
+  // Converts degrees to radians
+  this.toRadians = function(degrees) {
+    return degrees * Math.PI / 180;
+  };
+
   // Find distance between two latLngs
   this.distanceBetween = function(point1, point2) {
-    // Haversine formula
     var R = 6371e3; // Hokay. So. Here's the earth's radius...
     var lat1 = point1.lat();
     var lat2 = point2.lat();
     var lon1 = point1.lng();
     var lon2 = point2.lng();
-    var φ1 = lat1.toRadians();
-    var φ2 = lat2.toRadians();
-    var Δφ = (lat2-lat1).toRadians();
-    var Δλ = (lon2-lon1).toRadians();
+    var φ1 = this.toRadians(lat1)
+    var φ2 = this.toRadians(lat2)
+    var Δφ = this.toRadians(lat2-lat1)
+    var Δλ = this.toRadians(lon2-lon1)
 
+    // Haversine formula
     var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
             Math.cos(φ1) * Math.cos(φ2) *
             Math.sin(Δλ/2) * Math.sin(Δλ/2);
