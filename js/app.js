@@ -58,10 +58,15 @@ var ViewModel = function () {
       radius: radius,
       query: query
     };
-    this.placesService.textSearch(request, function(result) {
-      self.places(result);
-      self.filterPlaces();
-      self.showPlaces();
+    this.placesService.textSearch(request, function(result, status) {
+      if (status == google.maps.places.PlacesServiceStatus.OK) {
+        self.places(result);
+        self.filterPlaces();
+        self.showPlaces();
+      }
+      else {
+        window.alert('Places service request failed.');
+      }
     });
   };
 
@@ -159,9 +164,14 @@ var ViewModel = function () {
   this.moveMap = function () {
     self = this;
     // Convert this.city to a latLng
-    this.geoCoder.geocode({address: this.city()}, function(result) {
-      self.cityLocation = result[0].geometry.location;
-      self.map.panTo(self.cityLocation);
+    this.geoCoder.geocode({address: this.city()}, function(result, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        self.cityLocation = result[0].geometry.location;
+        self.map.panTo(self.cityLocation);
+      }
+      else {
+        window.alert('Geocoder request failed.');
+      }
     });
   };
 
@@ -225,7 +235,7 @@ var ViewModel = function () {
     this.infoWindow = new google.maps.InfoWindow();
   };
 
-  // Initialize the placesService
+  // Initialize the
   this.initPlacesService = function() {
     this.placesService = new google.maps.places.PlacesService(this.map);
   };
