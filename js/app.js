@@ -5,13 +5,9 @@ var ViewModel = function () {
   this.geoCoder = null;
   this.placesService = null;
   this.markers = [];
-  this.markerIcon = null;
 
   // The collection of places
   this.places = ko.observableArray();
-
-  // The places currently shown in the menu list
-  this.shownPlaces = ko.observableArray();
 
   // The currently selected city
   this.city = ko.observable('Mesa, AZ');
@@ -39,26 +35,24 @@ var ViewModel = function () {
       };
       self.placesService.textSearch(request, function(result) {
         self.places(result);
+        self.filterPlaces();
         self.showPlaces();
       });
     });
   };
 
+  // Remove places that do not fit the current bounds
+  this.filterPlaces = function() {
+    var bounds = this.map.getBounds();
+    this.places(this.places().filter(function(place){
+      return bounds.contains(place.geometry.location);
+    }));
+  };
+
   // Show places on the map and in the list
   this.showPlaces = function() {
-    // Get the first 5 places
-    var shown = [];
-    for (var i = 0; i < 5; i++){
-      shown[i] = this.places()[i];
-    };
-
-    // Show the first 5 places
-    this.shownPlaces(shown);
-
-    // Clear markers
+    // Clear markers and make new ones
     this.clearMarkers();
-
-    // Make new markers
     this.makeMarkers();
 
     // Set mode to list
@@ -67,25 +61,26 @@ var ViewModel = function () {
 
   // Make new markers
   this.makeMarkers = function() {
-    var bounds = new google.maps.LatLngBounds();
+    var bounds = this.map.getBounds();
     for (i = 0; i < this.places().length; i++) {
       var title = this.places()[i].name;
       var position = this.places()[i].geometry.location;
-      var icon = this.markerIcon;
-      var marker = new google.maps.Marker({
-        position: position,
-        title: title,
-        icon: icon,
-        optimize: false,
-        animation: null,
-        id: i
-      });
-      // Add marker to map
-      marker.setMap(this.map);
-      bounds.extend(marker.position);
-      this.markers.push(marker);
+
+      // Check if marker is in bounds (redundancy)
+      if (bounds.contains(position)){
+        var marker = new google.maps.Marker({
+          position: position,
+          title: title,
+          optimize: false,
+          animation: null,
+          id: i
+        });
+
+        // Add marker to map
+        marker.setMap(this.map);
+        this.markers.push(marker);
+      }
     };
-    this.map.fitBounds(bounds);
   };
 
   // Clear all markers
@@ -137,18 +132,6 @@ var ViewModel = function () {
     this.geoCoder = new google.maps.Geocoder();
   };
 
-  // Initialize the map icon
-  this.initIcon = function() {
-    var markerColor = '0091ff';
-    this.markerIcon = new google.maps.MarkerImage(
-      'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|' + markerColor +
-      '|40|_|%E2%80%A2',
-      new google.maps.Size(21, 34),
-      new google.maps.Point(0, 0),
-      new google.maps.Point(10, 34),
-      new google.maps.Size(21, 34));
-  };
-
   // Initialize the map
   this.initMap = function() {
     this.map = new google.maps.Map(document.getElementById('map'), {
@@ -161,7 +144,6 @@ var ViewModel = function () {
   // Initialize the app
   this.init = function() {
     this.initMap();
-    this.initIcon();
     this.initGeoCoder();
     this.initPlacesService();
   }
