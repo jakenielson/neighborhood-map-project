@@ -5,6 +5,7 @@ var ViewModel = function () {
   this.geoCoder = null;
   this.placesService = null;
   this.markers = [];
+  this.infoWindow = null;
 
   // The collection of places
   this.places = ko.observableArray();
@@ -27,8 +28,6 @@ var ViewModel = function () {
   // Functions
   // Get info about a place
   this.getInfo = function(place) {
-    console.log(place);
-
     this.placeName(place.name);
 
     if (place.photos) {
@@ -38,11 +37,13 @@ var ViewModel = function () {
       this.placePhoto(null);
     }
 
-    this.showInfo();
+    this.showInfo(place);
   };
 
   // Show info about a place
   this.showInfo = function(place) {
+    var marker = this.getMarker(place);
+    this.makeInfoWindow(place);
     this.mode('info');
   };
 
@@ -84,6 +85,35 @@ var ViewModel = function () {
     this.mode('list');
   };
 
+  // Make an infoWindow
+  this.makeInfoWindow = function(place, marker) {
+    var content = this.placeName();
+    var marker = this.getMarker(place);
+    if (this.infoWindow.marker != marker) {
+      this.infoWindow.setContent(content);
+      this.infoWindow.marker = marker;
+      this.infoWindow.open(this.map, this.infoWindow.marker);
+    }
+  };
+
+  // Get the place that matches a marker
+  this.getPlace = function(marker) {
+    for (var i = 0; i < this.places().length; i++) {
+      if (marker.position.equals(this.places()[i].geometry.location)) {
+        return this.places()[i];
+      }
+    };
+  };
+
+  // Get the marker that matches a place
+  this.getMarker = function(place) {
+    for (var i = 0; i < this.markers.length; i++) {
+      if (this.markers[i].position.equals(place.geometry.location)) {
+        return this.markers[i];
+      }
+    };
+  };
+
   // Make new markers
   this.makeMarkers = function() {
     var bounds = new google.maps.LatLngBounds();
@@ -101,6 +131,15 @@ var ViewModel = function () {
       // Add marker to map
       marker.setMap(this.map);
       bounds.extend(marker.position);
+
+      // Get info when marker is clicked
+      var self = this;
+      marker.addListener('click', function() {
+        var place = self.getPlace(this);
+        self.getInfo(place);
+      });
+
+      // Add marker to markers list
       this.markers.push(marker);
     };
     this.map.fitBounds(bounds);
@@ -134,6 +173,7 @@ var ViewModel = function () {
         this.mode('main');
         break;
       case 'info':
+        this.infoWindow.close();
         this.mode('list');
         break;
       default:
@@ -181,6 +221,10 @@ var ViewModel = function () {
     return d;
   };
 
+  this.initInfoWindow = function() {
+    this.infoWindow = new google.maps.InfoWindow();
+  };
+
   // Initialize the placesService
   this.initPlacesService = function() {
     this.placesService = new google.maps.places.PlacesService(this.map);
@@ -205,6 +249,7 @@ var ViewModel = function () {
     this.initMap();
     this.initGeoCoder();
     this.initPlacesService();
+    this.initInfoWindow();
   }
 };
 
