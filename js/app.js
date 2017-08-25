@@ -27,21 +27,18 @@ var ViewModel = function () {
   // Get places with queryText and queryRadius
   this.getPlaces = function() {
     var self = this;
-    // Convert this.city to a latLng
-    this.geoCoder.geocode({address: this.city()}, function(result){
-      var location = result[0].geometry.location;
-      var query = self.queryText();
-      var radius = self.milesToMeters(self.queryRadius());
-      var request = {
-        location: location,
-        radius: radius,
-        query: query
-      };
-      self.placesService.textSearch(request, function(result) {
-        self.places(result);
-        self.filterPlaces();
-        self.showPlaces();
-      });
+    var location = this.cityLocation;
+    var query = this.queryText();
+    var radius = this.milesToMeters(this.queryRadius());
+    var request = {
+      location: location,
+      radius: radius,
+      query: query
+    };
+    this.placesService.textSearch(request, function(result) {
+      self.places(result);
+      self.filterPlaces();
+      self.showPlaces();
     });
   };
 
