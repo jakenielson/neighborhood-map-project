@@ -16,7 +16,7 @@ var ViewModel = function () {
   // The currently selected city
   this.city = ko.observable('Mesa, AZ');
 
-  // The current search query
+  // Search query input
   this.queryText = ko.observable('Food');
   this.queryRadius = ko.observable(5);
 
@@ -24,37 +24,7 @@ var ViewModel = function () {
   this.mode = ko.observable('main');
 
   // Functions
-  // Get hotels
-  this.getHotels = function () {
-    this.getPlaces('hotel');
-  };
-
-  // Get restaurants
-  this.getRestaurants = function () {
-    this.getPlaces('food');
-  };
-
-  // Get entertainment
-  this.getEntertainment = function () {
-    this.getPlaces('entertainment');
-  };
-
-  // Get shopping
-  this.getShopping = function () {
-    this.getPlaces('shopping');
-  };
-
-  // Get ATMs
-  this.getATMs = function () {
-    this.getPlaces('ATM');
-  };
-
-  // Get hotels
-  this.getTourism = function () {
-    this.getPlaces('tourism');
-  };
-
-  // Get places with given query
+  // Get places with queryText and queryRadius
   this.getPlaces = function() {
     var self = this;
     // Convert this.city to a latLng

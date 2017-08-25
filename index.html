@@ -8,15 +8,15 @@
 <body>
   <div class="container">
     <div id="interface">
-      <h1>Neighborhood Map Project</h1>
-      <hr>
-      Enter a city or address:
-      <form data-bind="submit: moveMap">
-        <input data-bind="value: city" id="input-city" type="text">
-        <input type="submit" value="Submit">
-      </form>
+      <h1 id ="page-title">Neighborhood Map</h1>
       <hr>
       <div class="menu menu-main" data-bind="visible: mode() === 'main'">
+        Enter a city or address:
+        <form data-bind="submit: moveMap">
+          <input data-bind="value: city" id="input-city" type="text">
+          <input type="submit" value="Submit">
+        </form>
+        <hr>
         Find places:
         <form data-bind="submit: getPlaces">
           <input data-bind="value: queryText" id="input-query" type="text"> Query<br>
@@ -25,6 +25,7 @@
         </form>
       </div>
       <div class="menu menu-list" data-bind="visible: mode() === 'list'">
+        <h3><span data-bind="text: queryText"></span> within <span data-bind="text: queryRadius"></span> miles of <span data-bind="text: city"></span>: </h3>
         <ul id="place-list" data-bind="foreach: places">
           <li data-bind="text: name"></li>
         </ul>
