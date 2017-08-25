@@ -19,11 +19,33 @@ var ViewModel = function () {
 
   // The currently selected place
   this.placeName = ko.observable();
+  this.placePhoto = ko.observable();
 
   // The mode of the interface (main, list, or info)
   this.mode = ko.observable('main');
 
   // Functions
+  // Get info about a place
+  this.getInfo = function(place) {
+    console.log(place);
+
+    this.placeName(place.name);
+
+    if (place.photos) {
+      this.placePhoto(place.photos[0].getUrl({maxWidth: 640}));
+    }
+    else {
+      this.placePhoto(null);
+    }
+
+    this.showInfo();
+  };
+
+  // Show info about a place
+  this.showInfo = function(place) {
+    this.mode('info');
+  };
+
   // Get places with queryText and queryRadius
   this.getPlaces = function() {
     var self = this;
@@ -121,13 +143,7 @@ var ViewModel = function () {
 
   // Called when a list item is clicked
   this.listClick = function(place) {
-    this.showInfo(place);
-  };
-
-  // Show info about a place
-  this.showInfo= function(place) {
-    this.placeName(place.name);
-    this.mode('info');
+    this.getInfo(place);
   };
 
   // Convert miles to meters

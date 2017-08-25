@@ -32,3 +32,7 @@ body {
   overflow: hidden;
   overflow-y: scroll;
 }
+
+#place-photo {
+  width: 100%;
+}

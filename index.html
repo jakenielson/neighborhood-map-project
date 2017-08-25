@@ -34,6 +34,7 @@
       <div class="menu menu-info" data-bind="visible: mode() === 'info'">
         Showing info about: <br>
         <span data-bind="text: placeName"></span> <br>
+        <img id="place-photo" data-bind="attr: {src: placePhoto, alt: placeName}"> <br>
         <input data-bind="click: menuBack" type="button" value="< Back">
       </div>
     </div>
