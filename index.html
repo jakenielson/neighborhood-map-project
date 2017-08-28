@@ -32,6 +32,11 @@
       <div class="menu menu-info" data-bind="visible: mode() === 'info'">
         <span data-bind="text: placeName"></span> <br>
         <img id="place-photo" data-bind="attr: {src: placePhoto, alt: placeName}"> <br>
+        <p>Address: <span data-bind="text: fsAddress"></span></p> <br>
+        <span data-bind="text: fsPhone"></span></p> <br>
+        <span data-bind="text: fsTwitter"></span></p> <br>
+        <span data-bind="text: fsWebsite"></span></p> <br>
+        <span data-bind="text: fsCheckins"></span></p> <br>
         <input data-bind="click: menuBack" type="button" value="< Back">
       </div>
     </div>

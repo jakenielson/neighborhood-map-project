@@ -1,11 +1,13 @@
 var ViewModel = function () {
   // Data
-  // API objects
+  // API info
   this.map = null;
   this.geoCoder = null;
   this.placesService = null;
   this.markers = [];
   this.infoWindow = null;
+  this.foursquareID = 'U2P4SUDVP1MG43MSGVCCQZ3SPHI51ZWY3UYILUMSTBSIF3I5';
+  this.foursquareSecret = 'SWUUH0JJIYLVOKSYKHTEEDFTMXVCCLKVEWE5MFQYFYW21MKD';
 
   // The collection of places
   this.places = ko.observableArray();
@@ -22,10 +24,53 @@ var ViewModel = function () {
   this.placeName = ko.observable();
   this.placePhoto = ko.observable();
 
+  // Foursquare Info
+  this.fsAddress = ko.observable();
+  this.fsPhone = ko.observable();
+  this.fsTwitter = ko.observable();
+  this.fsWebsite = ko.observable();
+  this.fsCheckins = ko.observable();
+
   // The mode of the interface (start, list, or info)
   this.mode = ko.observable('start');
 
   // Functions
+  // Get foursquare info
+  this.getFoursquare = function(place) {
+    var self = this;
+    var name = place.name;
+    var lat = place.geometry.location.lat();
+    var lng = place.geometry.location.lng();
+    var url = 'https://api.foursquare.com/v2/venues/search?ll='
+            + lat + ',' + lng + '&client_id=' + this.foursquareID
+            + '&client_secret=' + this.foursquareSecret
+            + '&v=20160118' + '&query=' + name;
+    $.ajax({
+      url: url,
+      dataType: 'jsonp',
+      success: function(result) {
+        if (result.response.venues[0]) {
+          console.log(result);
+          self.fsAddress(result.response.venues[0].location.address);
+          self.fsPhone(result.response.venues[0].contact.formattedPhone);
+          self.fsTwitter(result.response.venues[0].contact.twitter);
+          self.fsWebsite(result.response.venues[0].url);
+          self.fsCheckins(result.response.venues[0].stats.checkinsCount);
+        }
+        else {
+          window.alert('Foursquare service return no results.')
+        }
+
+        // After this request we are ready to display the info to the user
+        self.showInfo(place);
+      },
+      error: function() {
+        window.alert('Foursquare service request failed.');
+        self.showInfo(place);
+      }
+    });
+  };
+
   // Bounce a marker
   this.bounce = function(marker) {
     marker.setAnimation(google.maps.Animation.BOUNCE);
@@ -45,14 +90,18 @@ var ViewModel = function () {
       this.placePhoto(null);
     }
 
-    this.showInfo(place);
+    // Ajax request for Foursquare info
+    this.getFoursquare(place);
   };
 
   // Show info about a place
   this.showInfo = function(place) {
     var marker = this.getMarker(place);
+    // Animate marker
     this.bounce(marker);
+    // Create an info window
     this.makeInfoWindow(place);
+    // Change mode to info
     this.mode('info');
   };
 
@@ -255,7 +304,7 @@ var ViewModel = function () {
     this.infoWindow = new google.maps.InfoWindow();
   };
 
-  // Initialize the
+  // Initialize the place service
   this.initPlacesService = function() {
     this.placesService = new google.maps.places.PlacesService(this.map);
   };
