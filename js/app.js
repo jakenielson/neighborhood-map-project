@@ -41,13 +41,13 @@ var ViewModel = function () {
     this.queryRadius('');
   };
 
-  // Reset foursquare info to N/A
+  // Reset foursquare info
   this.fsReset = function() {
-    this.fsAddress('N/A');
-    this.fsPhone('N/A');
-    this.fsTwitter('N/A');
-    this.fsWebsite('N/A');
-    this.fsCheckins('N/A');
+    this.fsAddress('');
+    this.fsPhone('');
+    this.fsTwitter('');
+    this.fsWebsite('');
+    this.fsCheckins('');
   };
 
   // Get foursquare info
@@ -101,7 +101,7 @@ var ViewModel = function () {
     this.placeName(place.name);
 
     if (place.photos) {
-      this.placePhoto(place.photos[0].getUrl({maxWidth: 320}));
+      this.placePhoto(place.photos[0].getUrl({maxWidth: 340}));
     }
     else {
       this.placePhoto(null);

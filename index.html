@@ -25,21 +25,45 @@
           <input data-bind="value: queryRadius" id="input-distance" type="text"> Distance (miles)<br>
           <input type="submit" value="Submit">
         </form>
+        <hr>
+        <div id="place-list-container">
         <ul id="place-list" data-bind="foreach: places">
-          <li data-bind="text: name, click: $parent.listClick.bind($parent, $data)"></li>
+          <li class="place-list-item" data-bind="text: name, click: $parent.listClick.bind($parent, $data)"></li>
         </ul>
+        </div>
       </div>
       <div class="menu menu-info" data-bind="visible: mode() === 'info'">
-        <span data-bind="text: placeName"></span> <br>
-        <div>
-          <img id="place-photo" data-bind="attr: {src: placePhoto, alt: placeName}">
+        <h2 data-bind="text: placeName"></h2>
+        <div id="photo-div">
+          <img id="place-photo" alt="Place Photo" data-bind="attr: {src: placePhoto}">
         </div>
         <ul id="fs-list">
-          <p>Address: <span data-bind="text: fsAddress() ? fsAddress : 'N/A'"></span></p>
-          <p>Phone: <span data-bind="text: fsPhone() ? fsPhone : 'N/A'"></span></p>
-          <p>Twitter: <span data-bind="text: fsTwitter() ? fsTwitter : 'N/A'"></span></p>
-          <p>Website: <span data-bind="text: fsWebsite() ? fsWebsite : 'N/A'"></span></p>
-          <p>Checkins: <span data-bind="text: fsCheckins() ? fsCheckins : 'N/A'"></span></p>
+          <h3 id="fs-header">Foursquare Info</h3>
+          <li data-bind="visible: fsAddress()">Address:
+            <ul>
+              <li data-bind="text: fsAddress()"></li>
+            </ul>
+          </li>
+          <li data-bind="visible: fsPhone()">Phone:
+            <ul>
+              <li data-bind="text: fsPhone()"></li>
+            </ul>
+          </li>
+          <li data-bind="visible: fsTwitter()">Twitter:
+            <ul>
+              <li><a data-bind="text: fsTwitter(), attr: {href: 'https://twitter.com/' + fsTwitter()}"></a></li>
+            </ul>
+          </li>
+          <li data-bind="visible: fsWebsite()">Website:
+            <ul>
+              <li><a data-bind="text: fsWebsite(), attr: {href: fsWebsite()}"></a></li>
+            </ul>
+          </li>
+          <li data-bind="visible: fsCheckins()">Checkins:
+            <ul>
+              <li data-bind="text: fsCheckins()"></li>
+            </ul>
+          </li>
         </ul>
         <input data-bind="click: menuBack" type="button" value="< Back">
       </div>
