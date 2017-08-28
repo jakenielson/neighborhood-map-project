@@ -17,8 +17,8 @@ var ViewModel = function () {
   this.cityLocation = null;
 
   // Search query input
-  this.queryText = ko.observable('Food');
-  this.queryRadius = ko.observable(5);
+  this.queryText = ko.observable();
+  this.queryRadius = ko.observable();
 
   // The currently selected place
   this.placeName = ko.observable();
@@ -35,6 +35,21 @@ var ViewModel = function () {
   this.mode = ko.observable('start');
 
   // Functions
+  // Reset search query fields
+  this.filterReset = function() {
+    this.queryText('');
+    this.queryRadius('');
+  };
+
+  // Reset foursquare info to N/A
+  this.fsReset = function() {
+    this.fsAddress('N/A');
+    this.fsPhone('N/A');
+    this.fsTwitter('N/A');
+    this.fsWebsite('N/A');
+    this.fsCheckins('N/A');
+  };
+
   // Get foursquare info
   this.getFoursquare = function(place) {
     var self = this;
@@ -49,8 +64,8 @@ var ViewModel = function () {
       url: url,
       dataType: 'jsonp',
       success: function(result) {
+        console.log(result.response.venues[0]);
         if (result.response.venues[0]) {
-          console.log(result);
           self.fsAddress(result.response.venues[0].location.address);
           self.fsPhone(result.response.venues[0].contact.formattedPhone);
           self.fsTwitter(result.response.venues[0].contact.twitter);
@@ -58,7 +73,8 @@ var ViewModel = function () {
           self.fsCheckins(result.response.venues[0].stats.checkinsCount);
         }
         else {
-          window.alert('Foursquare service return no results.')
+          self.fsReset();
+          window.alert('Foursquare service return no results.');
         }
 
         // After this request we are ready to display the info to the user
@@ -66,6 +82,7 @@ var ViewModel = function () {
       },
       error: function() {
         window.alert('Foursquare service request failed.');
+        self.fsReset();
         self.showInfo(place);
       }
     });
@@ -84,7 +101,7 @@ var ViewModel = function () {
     this.placeName(place.name);
 
     if (place.photos) {
-      this.placePhoto(place.photos[0].getUrl({maxWidth: 640}));
+      this.placePhoto(place.photos[0].getUrl({maxWidth: 320}));
     }
     else {
       this.placePhoto(null);
@@ -131,21 +148,26 @@ var ViewModel = function () {
     var location = this.cityLocation;
     var query = this.queryText();
     var radius = this.milesToMeters(this.queryRadius());
-    var request = {
-      location: location,
-      radius: radius,
-      query: query
-    };
-    this.placesService.textSearch(request, function(result, status) {
-      if (status == google.maps.places.PlacesServiceStatus.OK) {
-        self.places(result);
-        self.filterPlaces();
-        self.showPlaces();
-      }
-      else {
-        window.alert('Places service request failed.');
-      }
-    });
+    if (radius && query){
+      var request = {
+        location: location,
+        radius: radius,
+        query: query
+      };
+      this.placesService.textSearch(request, function(result, status) {
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+          self.places(result);
+          self.filterPlaces();
+          self.showPlaces();
+        }
+        else {
+          window.alert('Places service request failed.');
+        }
+      });
+    }
+    else {
+      window.alert("Please enter a valid search.")
+    }
   };
 
   // Remove places that do not fit the current bounds
@@ -246,6 +268,7 @@ var ViewModel = function () {
       if (status == google.maps.GeocoderStatus.OK) {
         self.cityLocation = result[0].geometry.location;
         self.map.panTo(self.cityLocation);
+        self.filterReset();
         self.defaultPlaces();
       }
       else {
