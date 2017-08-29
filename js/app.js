@@ -57,10 +57,7 @@ var ViewModel = function () {
     var name = place.name;
     var lat = place.geometry.location.lat();
     var lng = place.geometry.location.lng();
-    var url = 'https://api.foursquare.com/v2/venues/search?ll='
-            + lat + ',' + lng + '&client_id=' + this.foursquareID
-            + '&client_secret=' + this.foursquareSecret
-            + '&v=20160118' + '&query=' + name;
+    var url = 'https://api.foursquare.com/v2/venues/search?ll=' + lat + ',' + lng + '&client_id=' + this.foursquareID + '&client_secret=' + this.foursquareSecret + '&v=20160118' + '&query=' + name;
     $.ajax({
       url: url,
       dataType: 'jsonp',
@@ -117,7 +114,7 @@ var ViewModel = function () {
     // Animate marker
     this.bounce(marker);
     // Create an info window
-    this.makeInfoWindow(place);
+    this.makeInfoWindow(place, marker);
     // Change mode to info
     this.mode('info');
   };
@@ -172,7 +169,7 @@ var ViewModel = function () {
     }
     else {
       window.alert("Please enter a valid search.")
-    }
+    };
   };
 
   // Remove places that do not fit the current bounds
@@ -205,7 +202,6 @@ var ViewModel = function () {
   // Make an infoWindow
   this.makeInfoWindow = function(place, marker) {
     var content = this.placeName();
-    var marker = this.getMarker(place);
     if (this.infoWindow.marker != marker) {
       this.infoWindow.setContent(content);
       this.infoWindow.marker = marker;
@@ -219,7 +215,7 @@ var ViewModel = function () {
       if (marker.position.equals(this.places()[i].geometry.location)) {
         return this.places()[i];
       }
-    };
+    }
   };
 
   // Get the marker that matches a place
@@ -228,7 +224,13 @@ var ViewModel = function () {
       if (this.markers[i].position.equals(place.geometry.location)) {
         return this.markers[i];
       }
-    };
+    }
+  };
+
+  // Marker listener
+  this.markerClick = function() {
+    var place = self.getPlace(this);
+    self.getInfo(place);
   };
 
   // Make new markers
@@ -242,7 +244,7 @@ var ViewModel = function () {
         title: title,
         optimize: false,
         animation: null,
-        id: i
+        id: i,
       });
 
       // Add marker to map
@@ -250,15 +252,11 @@ var ViewModel = function () {
       bounds.extend(marker.position);
 
       // Get info when marker is clicked
-      var self = this;
-      marker.addListener('click', function() {
-        var place = self.getPlace(this);
-        self.getInfo(place);
-      });
+      marker.addListener('click', this.markerClick);
 
       // Add marker to markers list
       this.markers.push(marker);
-    };
+    }
     this.map.fitBounds(bounds);
   };
 
@@ -267,8 +265,8 @@ var ViewModel = function () {
     if (this.markers) {
       for (var i = 0; i < this.markers.length; i++) {
         this.markers[i].setMap(null);
-      };
-    };
+      }
+    }
     this.markers = [];
   };
 
@@ -318,15 +316,13 @@ var ViewModel = function () {
     var lat2 = point2.lat();
     var lon1 = point1.lng();
     var lon2 = point2.lng();
-    var φ1 = this.toRadians(lat1)
-    var φ2 = this.toRadians(lat2)
-    var Δφ = this.toRadians(lat2-lat1)
-    var Δλ = this.toRadians(lon2-lon1)
+    var φ1 = this.toRadians(lat1);
+    var φ2 = this.toRadians(lat2);
+    var Δφ = this.toRadians(lat2-lat1);
+    var Δλ = this.toRadians(lon2-lon1);
 
     // Haversine formula
-    var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-            Math.cos(φ1) * Math.cos(φ2) *
-            Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
 
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
@@ -364,7 +360,7 @@ var ViewModel = function () {
     this.initGeoCoder();
     this.initPlacesService();
     this.initInfoWindow();
-  }
+  };
 };
 
 // Instantiate a viewModel so viewModel.init can be used as the google api callback
