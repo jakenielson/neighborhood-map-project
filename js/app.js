@@ -168,8 +168,8 @@ var ViewModel = function () {
       });
     }
     else {
-      window.alert("Please enter a valid search.")
-    };
+      window.alert("Please enter a valid search.");
+    }
   };
 
   // Remove places that do not fit the current bounds
