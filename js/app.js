@@ -125,69 +125,58 @@ var ViewModel = function () {
   this.defaultPlaces = function() {
     var self = this;
     var location = this.cityLocation;
-    var radius = this.milesToMeters(this.queryRadius());
+    var radius = this.milesToMeters(10);
 
     this.placesBuffer = this.places();
+    this.places([]);
 
     var request = {
       location: location,
       radius: 5000
     };
-    this.placesService.nearbySearch(request, function(result, status) {
+    this.placesService.nearbySearch(request, function(result, status, pagination) {
       if (status == google.maps.places.PlacesServiceStatus.OK) {
-        self.places(result);
-        self.showPlaces();
+        self.places(self.places().concat(result));
+        if (pagination.hasNextPage) {
+          pagination.nextPage();
+        }
+        else {
+          self.placesBuffer = self.places();
+          self.map.panTo(self.cityLocation);
+          self.showPlaces();
+        }
       }
       else {
+        self.places(self.placesBuffer);
         window.alert('Places service request failed.');
       }
     });
   };
 
-  // Get filtered places with queryText and queryRadius
-  this.getPlaces = function() {
-    var self = this;
-    var location = this.cityLocation;
-    var query = this.queryText();
-    var radius = this.milesToMeters(this.queryRadius());
-
-    this.placesBuffer = this.places();
-
-    if (radius && query){
-      var request = {
-        location: location,
-        radius: radius,
-        query: query
-      };
-      this.placesService.textSearch(request, function(result, status) {
-        if (status == google.maps.places.PlacesServiceStatus.OK) {
-          self.places(result);
-          self.filterPlaces();
-        }
-        else {
-          window.alert('Places service request failed.');
-        }
-      });
-    }
-    else {
-      window.alert("Please enter a valid search.");
-    }
-  };
-
-  // Remove places that do not fit the current bounds
+  // Filter current results based on query
   this.filterPlaces = function() {
-    var self = this;
-    this.places(this.places().filter(function(place){
-      var distance = self.distanceBetween(place.geometry.location, self.cityLocation);
-      var radius = self.milesToMeters(self.queryRadius());
-      return distance <= radius;
-    }));
-    if (this.places().length > 0) {
-     self.showPlaces();
+    var tempPlaces = [];
+    var distance;
+    // Get unfiltered places
+    this.places(this.placesBuffer);
+    for (var i = 0; i < this.places().length; i++) {
+      distance = this.distanceBetween(this.cityLocation, this.places()[i].geometry.location);
+      for (var j = 0; j < this.places()[i].types.length; j++) {
+        if (this.places()[i].types[j] == this.queryText().toLowerCase() && distance < this.milesToMeters(this.queryRadius())) {
+          console.log(this.places()[i].types[j]);
+          console.log("match!");
+          tempPlaces.push(this.places()[i]);
+        }
+      }
+    }
+    console.log(tempPlaces);
+    if (tempPlaces.length > 0) {
+      this.placesBuffer = this.places();
+      this.places(tempPlaces);
+      this.showPlaces();
     }
     else {
-      this.places(this.placesBuffer);
-      window.alert("Oh no! You filtered all the things!");
+      window.alert("No results were returned by the filter.")
     }
   };
 
@@ -279,7 +268,6 @@ var ViewModel = function () {
     this.geoCoder.geocode({address: this.city()}, function(result, status) {
       if (status == google.maps.GeocoderStatus.OK) {
         self.cityLocation = result[0].geometry.location;
-        self.map.panTo(self.cityLocation);
         self.filterReset();
         self.defaultPlaces();
       }

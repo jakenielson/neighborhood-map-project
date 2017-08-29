@@ -51,7 +51,8 @@ a {
 }
 
 .places-panel {
-  height: calc(100vh - 360px);
+  height: auto;
+  max-height: calc(100vh - 320px);
   padding: 0px 0px 0px 15px;
 }
 
@@ -63,7 +64,7 @@ a {
 }
 
 .place-list {
-  height: 100%;
+  max-height: calc(100vh - 320px);
   width: 100%;
   margin: 0;
   overflow: auto;
@@ -175,6 +176,13 @@ a {
     position: absolute;
     width: 180px;
     clip: rect(0px,340px,200px,0px);
+  }
+
+  .list-wrapper {
+  }
+
+  .place-list {
+    max-height: 220px;
   }
 
   .fs-wrapper {

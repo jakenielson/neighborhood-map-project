@@ -12,6 +12,6 @@ Submitting the "Enter a city or address: " form pans the map to the new location
 
 To see a filtered list of places, enter a query and a distance in miles into the "Query" and "Distance" text fields of the "Filter places: " form. Tapping enter or clicking the submit button submits the form.
 
-Submitting the "Filter places: " form displays a filtered list of places and resizes the map to fit them all.
+Submitting the "Filter places: " form displays a filtered list of places and resizes the map to fit them all. To reset the map to the unfiltered results, use the Reset button.
 
 To view more information about a place, click on a marker or a list item. This displays an infowindow above the marker and additional information about the place in the interface. To return to the place list, click the "< Back" button.
