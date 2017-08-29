@@ -176,7 +176,7 @@ var ViewModel = function () {
       this.showPlaces();
     }
     else {
-      window.alert("No results were returned by the filter.")
+      window.alert("No results were returned by the filter.");
     }
   };
 
@@ -346,7 +346,7 @@ var ViewModel = function () {
 
   // Google maps error handler
   this.mapError = function() {
-    window.alert("Google Maps failed to load.")
+    window.alert("Google Maps failed to load.");
   };
 
   // Initialize the app
