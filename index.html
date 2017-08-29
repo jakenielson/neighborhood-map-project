@@ -46,27 +46,27 @@
           <h3 class="fs-header">Foursquare Info</h3>
           <div class="fs-wrapper">
             <ul class="fs-list">
-              <li class="fs-list-item" data-bind="visible: fsAddress()">Address:
+              <li class="fs-list-item" data-bind="visible: fsAddress() != 'N/A'">Address:
                 <ul>
                   <li class="fs-list-subitem" data-bind="text: fsAddress()"></li>
                 </ul>
               </li>
-              <li class="fs-list-item" data-bind="visible: fsPhone()">Phone:
+              <li class="fs-list-item" data-bind="visible: fsPhone() != 'N/A'">Phone:
                 <ul>
                   <li class="fs-list-subitem" data-bind="text: fsPhone()"></li>
                 </ul>
               </li>
-              <li class="fs-list-item" data-bind="visible: fsTwitter()">Twitter:
+              <li class="fs-list-item" data-bind="visible: fsTwitter() != 'N/A'">Twitter:
                 <ul>
                   <li class="fs-list-subitem"><a data-bind="text: fsTwitter(), attr: {href: 'https://twitter.com/' + fsTwitter()}"></a></li>
                 </ul>
               </li>
-              <li class="fs-list-item" data-bind="visible: fsWebsite()">Website:
+              <li class="fs-list-item" data-bind="visible: fsWebsite() != 'N/A'">Website:
                 <ul>
                   <li class="fs-list-subitem"><a data-bind="text: fsWebsite(), attr: {href: fsWebsite()}"></a></li>
                 </ul>
               </li>
-              <li class="fs-list-item" data-bind="visible: fsCheckins()">Checkins:
+              <li class="fs-list-item" data-bind="visible: fsCheckins() != 'N/A'">Checkins:
                 <ul>
                   <li class="fs-list-subitem" data-bind="text: fsCheckins()"></li>
                 </ul>

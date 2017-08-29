@@ -63,11 +63,13 @@ var ViewModel = function () {
       dataType: 'jsonp',
       success: function(result) {
         if (result.response.venues[0]) {
-          self.fsAddress(result.response.venues[0].location.address);
-          self.fsPhone(result.response.venues[0].contact.formattedPhone);
-          self.fsTwitter(result.response.venues[0].contact.twitter);
-          self.fsWebsite(result.response.venues[0].url);
-          self.fsCheckins(result.response.venues[0].stats.checkinsCount);
+          // If one of these observables is set to N/A, the associated dom element is set to not display
+          // Otherwise, the dom element displays the fetched information
+          self.fsAddress(result.response.venues[0].location.address || 'N/A');
+          self.fsPhone(result.response.venues[0].contact.formattedPhone || 'N/A');
+          self.fsTwitter(result.response.venues[0].contact.twitter || 'N/A');
+          self.fsWebsite(result.response.venues[0].url || 'N/A');
+          self.fsCheckins(result.response.venues[0].stats.checkinsCount || 'N/A');
         }
         else {
           self.fsReset();
