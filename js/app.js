@@ -11,6 +11,7 @@ var ViewModel = function () {
 
   // The collection of places
   this.places = ko.observableArray();
+  this.placesBuffer = [];
 
   // The currently selected city
   this.city = ko.observable();
@@ -64,7 +65,6 @@ var ViewModel = function () {
       url: url,
       dataType: 'jsonp',
       success: function(result) {
-        console.log(result.response.venues[0]);
         if (result.response.venues[0]) {
           self.fsAddress(result.response.venues[0].location.address);
           self.fsPhone(result.response.venues[0].contact.formattedPhone);
@@ -127,6 +127,9 @@ var ViewModel = function () {
     var self = this;
     var location = this.cityLocation;
     var radius = this.milesToMeters(this.queryRadius());
+
+    this.placesBuffer = this.places();
+
     var request = {
       location: location,
       radius: 5000
@@ -148,6 +151,9 @@ var ViewModel = function () {
     var location = this.cityLocation;
     var query = this.queryText();
     var radius = this.milesToMeters(this.queryRadius());
+
+    this.placesBuffer = this.places();
+
     if (radius && query){
       var request = {
         location: location,
@@ -158,7 +164,6 @@ var ViewModel = function () {
         if (status == google.maps.places.PlacesServiceStatus.OK) {
           self.places(result);
           self.filterPlaces();
-          self.showPlaces();
         }
         else {
           window.alert('Places service request failed.');
@@ -178,6 +183,13 @@ var ViewModel = function () {
       var radius = self.milesToMeters(self.queryRadius());
       return distance <= radius;
     }));
+    if (this.places().length > 0) {
+     self.showPlaces();
+    }
+    else {
+      this.places(this.placesBuffer);
+      window.alert("Oh no! You filtered all the things!");
+    }
   };
 
   // Show places on the map and in the list
