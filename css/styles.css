@@ -26,12 +26,13 @@ body {
   height: calc(100% - 40px);
   width: 340px;
   padding: 10px 10px 30px 10px;
-  background: ivory;
+  background: #ecf0f1;
   line-height: 200%;
 }
 
 .interface-panel {
-  background-color: lightsalmon;
+  background-color: #2980b9;
+  color: white;
   border-radius: 10px;
   padding: 10px 20px;
   margin: 10px 0px;
@@ -43,6 +44,10 @@ h1, h3 {
 
 ul {
   list-style: none;
+}
+
+a {
+  color: #f39c12;
 }
 
 .places-panel {
@@ -67,14 +72,15 @@ ul {
 
 .place-list-item {
   border: 1px solid grey;
-  background-color: ivory;
+  background-color: #ecf0f1;
+  color: black;
   border-bottom: none;
   padding: 0px 10px;
   cursor: pointer;
 }
 
 .place-list-item:hover {
-  background-color: lightsalmon;
+  background-color: #f39c12;
 }
 
 .place-list-item:last-child {
@@ -111,7 +117,7 @@ ul {
 }
 
 .back-button {
-  margin-top: 10px;
+  margin: 10px 0px;
 }
 
 @media all and (max-width: 700px) {
@@ -146,7 +152,7 @@ ul {
 
   .places-panel, .foursquare-panel {
     width: calc(100vw - 240px);
-    height: 220px;
+    max-height: 220px;
     line-height: 150%;
   }
 
@@ -179,7 +185,7 @@ ul {
   }
 
   .fs-list {
-    height: 180px;
+    max-height: 180px;
     width: 100%;
     margin: 0;
     overflow: auto;
