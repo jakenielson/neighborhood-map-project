@@ -236,7 +236,7 @@ var ViewModel = function () {
   // Make new markers
   this.makeMarkers = function() {
     var bounds = new google.maps.LatLngBounds();
-    for (i = 0; i < this.places().length; i++) {
+    for (var i = 0; i < this.places().length; i++) {
       var title = this.places()[i].name;
       var position = this.places()[i].geometry.location;
       var marker = new google.maps.Marker({
