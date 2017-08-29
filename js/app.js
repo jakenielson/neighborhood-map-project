@@ -14,7 +14,7 @@ var ViewModel = function () {
   this.placesBuffer = [];
 
   // The currently selected city
-  this.city = ko.observable();
+  this.city = ko.observable('Mesa, AZ');
   this.cityLocation = null;
 
   // Search query input
@@ -354,12 +354,18 @@ var ViewModel = function () {
     });
   };
 
+  // Google maps error handler
+  this.mapError = function() {
+    window.alert("Google Maps failed to load.")
+  };
+
   // Initialize the app
   this.init = function() {
     this.initMap();
     this.initGeoCoder();
     this.initPlacesService();
     this.initInfoWindow();
+    this.moveMap();
   };
 };
 
