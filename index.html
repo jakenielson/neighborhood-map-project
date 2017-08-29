@@ -9,65 +9,69 @@
 <body>
   <div class="container">
     <div id="interface">
-      <h1 id="interface-title">Neighborhood Map</h1>
-      <div class="interface-panel">
-        <h4>Enter a city or address:</h4>
-        <form data-bind="submit: moveMap">
-          <input data-bind="value: city" id="input-city" type="text">
-          <input type="submit" value="Submit">
-        </form>
-      </div>
-      <div class="interface-panel" data-bind="visible: mode() === 'list'">
-        <h4>Filter places:</h4>
-        <form data-bind="submit: getPlaces">
-          <input data-bind="value: queryText" id="input-query" type="text"><label>Query</label><br>
-          <input data-bind="value: queryRadius" id="input-distance" type="text"><label>Distance (mi)</label><br>
-          <input type="submit" value="Submit">
-        </form>
-      </div>
-      <div id="place-panel" class="interface-panel" data-bind="visible: mode() === 'list'">
-        <div id="place-list-container">
-        <ul id="place-list" data-bind="foreach: places">
-          <li class="place-list-item" data-bind="text: name, click: $parent.listClick.bind($parent, $data)"></li>
-        </ul>
+      <div class="interface-group">
+        <h1 id="interface-title">Neighborhood Map</h1>
+        <div class="interface-panel">
+          <h4>Enter a city or address:</h4>
+          <form data-bind="submit: moveMap">
+            <input data-bind="value: city" id="input-city" type="text">
+            <input type="submit" value="Submit">
+          </form>
+        </div>
+        <div class="interface-panel" data-bind="visible: mode() === 'list'">
+          <h4>Filter places:</h4>
+          <form data-bind="submit: getPlaces">
+            <input data-bind="value: queryText" id="input-query" type="text"><label>Query</label><br>
+            <input data-bind="value: queryRadius" id="input-distance" type="text"><label>Distance (mi)</label><br>
+            <input type="submit" value="Submit">
+          </form>
+        </div>
+        <div id="photo-panel" class="interface-panel" data-bind="visible: mode() === 'info'">
+          <h2 data-bind="text: placeName"></h2>
+          <div id="photo-div">
+            <img id="place-photo" alt="Place Photo" data-bind="attr: {src: placePhoto}">
+          </div>
         </div>
       </div>
-      <div id="photo-panel" class="interface-panel" data-bind="visible: mode() === 'info'">
-        <h2 data-bind="text: placeName"></h2>
-        <div id="photo-div">
-          <img id="place-photo" alt="Place Photo" data-bind="attr: {src: placePhoto}">
+      <div class="interface-group">
+        <div id="place-panel" class="interface-panel" data-bind="visible: mode() === 'list'">
+          <div id="place-list-container">
+          <ul id="place-list" data-bind="foreach: places">
+            <li class="place-list-item" data-bind="text: name, click: $parent.listClick.bind($parent, $data)"></li>
+          </ul>
+          </div>
         </div>
-      </div>
-      <div class="interface-panel" data-bind="visible: mode() === 'info'">
-        <ul id="fs-list">
-          <h3 id="fs-header">Foursquare Info</h3>
-          <li data-bind="visible: fsAddress()">Address:
-            <ul>
-              <li data-bind="text: fsAddress()"></li>
-            </ul>
-          </li>
-          <li data-bind="visible: fsPhone()">Phone:
-            <ul>
-              <li data-bind="text: fsPhone()"></li>
-            </ul>
-          </li>
-          <li data-bind="visible: fsTwitter()">Twitter:
-            <ul>
-              <li><a data-bind="text: fsTwitter(), attr: {href: 'https://twitter.com/' + fsTwitter()}"></a></li>
-            </ul>
-          </li>
-          <li data-bind="visible: fsWebsite()">Website:
-            <ul>
-              <li><a data-bind="text: fsWebsite(), attr: {href: fsWebsite()}"></a></li>
-            </ul>
-          </li>
-          <li data-bind="visible: fsCheckins()">Checkins:
-            <ul>
-              <li data-bind="text: fsCheckins()"></li>
-            </ul>
-          </li>
-        </ul>
-        <input data-bind="click: menuBack" type="button" value="< Back">
+        <div class="interface-panel" data-bind="visible: mode() === 'info'">
+          <ul id="fs-list">
+            <h3 id="fs-header">Foursquare Info</h3>
+            <li data-bind="visible: fsAddress()">Address:
+              <ul>
+                <li data-bind="text: fsAddress()"></li>
+              </ul>
+            </li>
+            <li data-bind="visible: fsPhone()">Phone:
+              <ul>
+                <li data-bind="text: fsPhone()"></li>
+              </ul>
+            </li>
+            <li data-bind="visible: fsTwitter()">Twitter:
+              <ul>
+                <li><a data-bind="text: fsTwitter(), attr: {href: 'https://twitter.com/' + fsTwitter()}"></a></li>
+              </ul>
+            </li>
+            <li data-bind="visible: fsWebsite()">Website:
+              <ul>
+                <li><a data-bind="text: fsWebsite(), attr: {href: fsWebsite()}"></a></li>
+              </ul>
+            </li>
+            <li data-bind="visible: fsCheckins()">Checkins:
+              <ul>
+                <li data-bind="text: fsCheckins()"></li>
+              </ul>
+            </li>
+          </ul>
+          <input data-bind="click: menuBack" type="button" value="< Back">
+        </div>
       </div>
     </div>
     <div id="map">
