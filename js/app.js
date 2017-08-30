@@ -132,7 +132,7 @@ var ViewModel = function () {
 
     var request = {
       location: location,
-      radius: 5000
+      radius: radius
     };
     this.placesService.nearbySearch(request, function(result, status, pagination) {
       if (status == google.maps.places.PlacesServiceStatus.OK) {
@@ -339,7 +339,7 @@ var ViewModel = function () {
   this.initMap = function() {
     this.map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: 33.364070, lng: -111.858903},
-      zoom: 13,
+      zoom: 10,
       mapTypeControl: false
     });
   };
@@ -361,4 +361,5 @@ var ViewModel = function () {
 
 // Instantiate a viewModel so viewModel.init can be used as the google api callback
 var viewModel = new ViewModel();
+
 ko.applyBindings(viewModel);
