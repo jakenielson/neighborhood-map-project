@@ -33,7 +33,7 @@ var ViewModel = function () {
   this.fsCheckins = ko.observable();
 
   // The mode of the interface (start, list, or info)
-  this.mode = ko.observable('start');
+  this.mode = ko.observable('list');
 
   // Functions
   // Reset search query fields
@@ -163,13 +163,10 @@ var ViewModel = function () {
       distance = this.distanceBetween(this.cityLocation, this.places()[i].geometry.location);
       for (var j = 0; j < this.places()[i].types.length; j++) {
         if (this.places()[i].types[j] == this.queryText().toLowerCase() && distance < this.milesToMeters(this.queryRadius())) {
-          console.log(this.places()[i].types[j]);
-          console.log("match!");
           tempPlaces.push(this.places()[i]);
         }
       }
     }
-    console.log(tempPlaces);
     if (tempPlaces.length > 0) {
       this.placesBuffer = this.places();
       this.places(tempPlaces);
@@ -335,11 +332,34 @@ var ViewModel = function () {
     this.geoCoder = new google.maps.Geocoder();
   };
 
+  // Load the map with dummy locations
+  this.makeDummies = function(){
+    this.places(dummyLocations);
+
+    for (var i = 0; i < this.places().length; i++) {
+      var title = this.places()[i].name;
+      var position = this.places()[i].geometry.location;
+      var marker = new google.maps.Marker({
+        position: position,
+        title: title,
+        optimize: false,
+        animation: null,
+        id: i,
+      });
+
+      // Add marker to map
+      marker.setMap(this.map);
+
+      // Add marker to markers list
+      this.markers.push(marker);
+    }
+  };
+
   // Initialize the map
   this.initMap = function() {
     this.map = new google.maps.Map(document.getElementById('map'), {
-      center: {lat: 33.364070, lng: -111.858903},
-      zoom: 10,
+      center: {lat: 33.4151843, lng: -111.8314724},
+      zoom: 12,
       mapTypeControl: false
     });
   };
@@ -352,6 +372,7 @@ var ViewModel = function () {
   // Initialize the app
   this.init = function() {
     this.initMap();
+    this.makeDummies();
     this.initGeoCoder();
     this.initPlacesService();
     this.initInfoWindow();
