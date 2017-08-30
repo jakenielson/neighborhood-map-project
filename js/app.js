@@ -34,6 +34,7 @@ var ViewModel = function () {
 
   // The mode of the interface (start, list, or info)
   this.mode = ko.observable('list');
+  this.loaded = false;
 
   // Functions
   // Reset search query fields
@@ -155,25 +156,30 @@ var ViewModel = function () {
 
   // Filter current results based on query
   this.filterPlaces = function() {
-    var tempPlaces = [];
-    var distance;
-    // Get unfiltered places
-    this.places(this.placesBuffer);
-    for (var i = 0; i < this.places().length; i++) {
-      distance = this.distanceBetween(this.cityLocation, this.places()[i].geometry.location);
-      for (var j = 0; j < this.places()[i].types.length; j++) {
-        if (this.places()[i].types[j] == this.queryText().toLowerCase() && distance < this.milesToMeters(this.queryRadius())) {
-          tempPlaces.push(this.places()[i]);
+    if (this.loaded) {
+      var tempPlaces = [];
+      var distance;
+      // Get unfiltered places
+      this.places(this.placesBuffer);
+      for (var i = 0; i < this.places().length; i++) {
+        distance = this.distanceBetween(this.cityLocation, this.places()[i].geometry.location);
+        for (var j = 0; j < this.places()[i].types.length; j++) {
+          if (this.places()[i].types[j] == this.queryText().toLowerCase() && distance < this.milesToMeters(this.queryRadius())) {
+            tempPlaces.push(this.places()[i]);
+          }
         }
       }
-    }
-    if (tempPlaces.length > 0) {
-      this.placesBuffer = this.places();
-      this.places(tempPlaces);
-      this.showPlaces();
+      if (tempPlaces.length > 0) {
+        this.placesBuffer = this.places();
+        this.places(tempPlaces);
+        this.showPlaces();
+      }
+      else {
+        window.alert("No results were returned by the filter.");
+      }
     }
     else {
-      window.alert("No results were returned by the filter.");
+      window.alert("Please wait until data is retrieved before searching.");
     }
   };
 
@@ -185,6 +191,7 @@ var ViewModel = function () {
 
     // Set mode to list
     this.mode('list');
+    this.loaded = true;
   };
 
   // Make an infoWindow
